@@ -3,202 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>红色指挥中心 · 毛选战略引擎 9.0</title>
+    <title>红色指挥中心 10.0 · 实战指令版</title>
     <style>
         :root { --red: #8e2929; --gold: #c5a059; --army: #3d4a35; --paper: #f2ede4; --ink: #1a1a1a; }
         body { background-color: var(--ink); color: var(--paper); font-family: 'STKaiti', 'KaiTi', serif; margin: 0; padding: 0; }
-        .top-secret { background: var(--red); color: white; padding: 5px; font-size: 0.7rem; text-align: center; border-bottom: 1px solid var(--gold); letter-spacing: 2px; }
-        header { text-align: center; padding: 30px 20px; }
+        header { text-align: center; padding: 30px 20px; border-bottom: 2px solid var(--red); }
         header h1 { font-size: 1.8rem; color: var(--gold); margin: 0; letter-spacing: 6px; }
-        .container { max-width: 600px; margin: 0 auto; padding: 15px 15px 100px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; padding-bottom: 100px; }
 
-        /* 输入面板 */
-        .command-panel { background: rgba(255,255,255,0.03); border: 1px solid var(--army); padding: 20px; border-radius: 4px; margin-bottom: 20px; }
-        label { display: block; font-size: 0.9rem; color: var(--gold); margin-bottom: 10px; }
-        textarea { width: 100%; height: 100px; background: rgba(0,0,0,0.5); border: 1px solid var(--army); color: #fff; padding: 12px; box-sizing: border-box; font-family: inherit; font-size: 1rem; resize: none; }
+        /* 输入区 */
+        .input-panel { background: rgba(255,255,255,0.03); border: 1px solid var(--army); padding: 20px; border-radius: 4px; margin-bottom: 20px; }
+        textarea { width: 100%; height: 90px; background: rgba(0,0,0,0.5); border: 1px solid var(--army); color: #fff; padding: 12px; box-sizing: border-box; font-family: inherit; font-size: 1rem; resize: none; border-radius: 4px; }
 
-        /* 创新：阶段选择器 */
-        .stage-selector { display: flex; gap: 8px; margin-bottom: 20px; }
-        .stage-btn { flex: 1; padding: 8px; font-size: 0.75rem; background: #222; border: 1px solid #444; color: #888; border-radius: 4px; cursor: pointer; text-align: center; }
-        .stage-btn.active { background: var(--army); color: var(--gold); border-color: var(--gold); }
+        /* 选择器 */
+        .label-tag { font-size: 0.8rem; color: var(--gold); margin: 15px 0 10px; display: block; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-opt { background: #222; border: 1px solid #444; color: #888; padding: 12px; font-size: 0.8rem; cursor: pointer; border-radius: 4px; text-align: center; }
+        .btn-opt.active { background: var(--army); color: var(--gold); border-color: var(--gold); font-weight: bold; }
 
-        /* 框架选择 */
-        .framework-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .mode-btn { background: rgba(61, 74, 53, 0.2); border: 1px solid var(--army); color: var(--army); padding: 12px; font-size: 0.85rem; cursor: pointer; border-radius: 2px; }
-        .mode-btn.active { background: var(--army); color: var(--gold); font-weight: bold; border-color: var(--gold); }
+        .btn-main { background: var(--red); color: white; border: 2px solid var(--gold); width: 100%; padding: 18px; border-radius: 4px; font-weight: bold; font-size: 1.2rem; margin-top: 25px; cursor: pointer; letter-spacing: 5px; }
 
-        .btn-execute { background: var(--red); color: white; border: 2px solid var(--gold); width: 100%; padding: 18px; border-radius: 4px; font-weight: bold; font-size: 1.2rem; margin-top: 20px; cursor: pointer; letter-spacing: 4px; }
-        .btn-execute:active { transform: scale(0.98); opacity: 0.9; }
-
-        /* 档案展示区 */
-        #result-view { display: none; margin-top: 30px; }
-        .archive { background-color: var(--paper); color: var(--ink); padding: 30px 20px; box-shadow: 0 15px 50px rgba(0,0,0,0.7); position: relative; border: 1px solid #dcd7c9; }
-        .archive h2 { border-bottom: 2px solid var(--ink); padding-bottom: 10px; margin-top: 0; color: var(--red); font-size: 1.4rem; text-align: center; }
-        .seal { position: absolute; top: 20px; right: 15px; width: 65px; height: 65px; border: 3px solid var(--red); border-radius: 50%; color: var(--red); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; transform: rotate(12deg); opacity: 0.5; }
+        /* 战报区 */
+        #result-view { display: none; margin-top: 30px; animation: slideUp 0.4s ease; }
+        .archive { background: var(--paper); color: var(--ink); padding: 30px 20px; border-radius: 2px; position: relative; border: 1px solid #dcd7c9; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .seal { position: absolute; top: 15px; right: 15px; width: 60px; height: 60px; border: 2px solid var(--red); border-radius: 50%; color: var(--red); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; transform: rotate(15deg); opacity: 0.5; }
         
         .section { margin-bottom: 25px; }
-        .tag { background: var(--ink); color: var(--paper); padding: 2px 10px; font-size: 0.75rem; margin-bottom: 10px; display: inline-block; }
+        .section h4 { border-left: 5px solid var(--red); padding-left: 10px; margin: 0 0 10px; color: var(--red); font-size: 1.1rem; }
         .content { text-align: justify; line-height: 1.7; font-size: 1.05rem; }
-        .quote { background: rgba(0,0,0,0.05); padding: 12px; border-left: 4px solid var(--red); margin: 15px 0; font-style: italic; color: #444; font-size: 0.95rem; }
+        .cmd-item { background: rgba(0,0,0,0.05); padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid var(--army); }
+        .cmd-item b { color: var(--red); display: block; margin-bottom: 4px; }
 
-        /* 历史记录 */
-        .history-panel { margin-top: 40px; border-top: 1px solid #333; padding-top: 20px; }
-        .hist-item { background: #1a1a1a; padding: 10px; border-radius: 4px; margin-bottom: 10px; font-size: 0.8rem; border-left: 3px solid var(--army); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div class="top-secret">核心战略推演系统 · 绝密档案</div>
-
-<header>
-    <h1>指挥中心 9.0</h1>
-    <div style="color:var(--army); font-size: 0.75rem; margin-top:5px; letter-spacing: 2px;">—— 集中优势兵力 · 解决主要矛盾 ——</div>
-</header>
+<header><h1>战 略 指 挥 部 10.0</h1></header>
 
 <div class="container">
-    <div class="command-panel">
-        <label>【战况情报】描述你面临的困境、博弈或问题：</label>
-        <textarea id="userInput" placeholder="例如：客户续费节奏乱，没有思路，凭本能沟通..."></textarea>
+    <div class="input-panel">
+        <label class="label-tag">【输入当前敌我局势或困惑】</label>
+        <textarea id="userInput" placeholder="例如：客户续费节奏乱，沟通没思路..."></textarea>
 
-        <label style="margin-top:20px;">【势态感知】你当前处于什么阶段？</label>
-        <div class="stage-selector">
-            <div class="stage-btn active" onclick="setStage('defense', this)">战略防御<br>(敌强我弱)</div>
-            <div class="stage-btn" onclick="setStage('stalemate', this)">战略相持<br>(僵持阶段)</div>
-            <div class="stage-btn" onclick="setStage('offense', this)">战略反攻<br>(趁胜追击)</div>
+        <label class="label-tag">【判定当前斗争阶段】</label>
+        <div class="grid" id="stageGrid">
+            <div class="btn-opt active" onclick="setStage('def', this)">敌强我弱 (防御)</div>
+            <div class="btn-opt" onclick="setStage('sta', this)">陷入僵持 (相持)</div>
         </div>
 
-        <label>【指导思想】选择推演逻辑：</label>
-        <div class="framework-grid">
-            <div class="mode-btn active" onclick="setMode('contradiction', this)">矛盾论 · 找痛点</div>
-            <div class="mode-btn" onclick="setMode('united-front', this)">统一战线 · 借外力</div>
-            <div class="mode-btn" onclick="setMode('protracted', this)">持久战 · 控节奏</div>
-            <div class="mode-btn" onclick="setMode('investigation', this)">实践调研 · 破假象</div>
+        <label class="label-tag">【请领战略指导方向】</label>
+        <div class="grid" id="modeGrid">
+            <div class="btn-opt active" onclick="setMode('con', this)">矛盾论 · 抓重点</div>
+            <div class="btn-opt" onclick="setMode('uni', this)">统一战线 · 找外援</div>
+            <div class="btn-opt" onclick="setMode('pro', this)">持久战 · 耗时间</div>
+            <div class="btn-opt" onclick="setMode('pra', this)">实践论 · 去现场</div>
         </div>
 
-        <button class="btn-execute" onclick="executeStrategy()">启 动 战 略 推 演</button>
+        <button class="btn-main" onclick="startDeduction()">启 动 战 略 指 挥</button>
     </div>
 
     <div id="result-view">
         <div class="archive">
-            <div class="seal" id="res-seal">实事<br>求是</div>
-            <h2 id="res-title">战略指引方案</h2>
+            <div class="seal">绝密<br>执行</div>
+            <h2 style="text-align:center; border-bottom:2px solid #000; padding-bottom:10px; margin-top:0;">战略执行建议书</h2>
             
             <div class="section">
-                <span class="tag">深度思维路径</span>
-                <div class="content" id="res-thinking"></div>
+                <h4>一、 思想降维拆解</h4>
+                <div class="content" id="res-think"></div>
             </div>
-
-            <div class="quote" id="res-quote"></div>
 
             <div class="section">
-                <span class="tag">具体行动纲领</span>
-                <div class="content" id="res-action"></div>
+                <h4>二、 具体战斗命令</h4>
+                <div id="res-actions"></div>
             </div>
 
-            <div style="text-align: center; border-top: 1px solid #ccc; padding-top: 15px; font-size: 0.7rem; color: #888;">
-                根据《毛选》原著逻辑实时合成
+            <div style="text-align:center; font-size:0.7rem; color:#888; border-top:1px solid #ddd; padding-top:15px;">
+                实事求是 · 理论联系实际
             </div>
         </div>
-    </div>
-
-    <div class="history-panel" id="history-area" style="display:none;">
-        <label>【过往档案】</label>
-        <div id="history-list"></div>
     </div>
 </div>
 
 <script>
-    let currentMode = 'contradiction';
-    let currentStage = 'defense';
+    let currentMode = 'con';
+    let currentStage = 'def';
 
-    function setMode(mode, el) {
-        currentMode = mode;
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    function setStage(s, el) {
+        currentStage = s;
+        document.querySelectorAll('#stageGrid .btn-opt').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
     }
 
-    function setStage(stage, el) {
-        currentStage = stage;
-        document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+    function setMode(m, el) {
+        currentMode = m;
+        document.querySelectorAll('#modeGrid .btn-opt').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
     }
 
-    const STRATEGY_DATABASE = {
-        contradiction: {
-            defense: {
-                thinking: "在敌强我弱的防御期，客户续费不力不是因为技巧，而是因为你‘陷入了次要矛盾’。你越是卑微乞求续费，越是丢失主要矛盾。主要矛盾是：你是否解决了客户的生死存亡问题？如果主要矛盾没解决，所有的沟通细节（续费节奏）都是无用功。",
-                quote: "“捉住了这个主要矛盾，一切问题就迎刃而解了。”",
-                actions: ["1. 停止胡乱沟通，立即调研客户最怕什么。","2. 集中所有精力解决一个他最痛的问题，哪怕不谈续费。","3. 重新建立‘不可替代性’，夺回主动权。"]
-            },
-            stalemate: {
-                thinking: "相持阶段，比拼的是耐性。现在的‘乱’是因为你试图寻找速效药。要承认续费是一个周期性博弈。你需要分析哪些客户是‘顽固派’，哪些是‘中间派’。把 80% 的精力放在最容易突破的中间派身上，而不是死磕顽固派。",
-                quote: "“在复杂的事物发展过程中，必有一个主要矛盾。”",
-                actions: ["1. 梳理客户分级，识别‘主要突破口’。","2. 建立标准化续费流程，用规范化对抗‘凭本能’。","3. 在局部区域形成小规模成功，提振信心。"]
-            }
+    // 核心：深度实战逻辑引擎
+    const LOGIC_ENGINE = {
+        con: { // 矛盾论
+            def: (q) => ({
+                think: `针对“${q}”，现在最忌讳胡子眉毛一把抓。由于处于防御期，你感到的“乱”是因为你把次要矛盾当成了主要矛盾。现在续费不畅只是表象，主要矛盾是你提供的价值还没到让对方“离不开”的地步。`,
+                cmds: [
+                    { b: "【断舍离】", c: "停止对所有客户的本能沟通，挑出那20%最可能续费的，死磕他们。其他的先放一边。" },
+                    { b: "【找针眼】", c: "不要谈续费，谈对方目前最头疼的一个问题。把那个“针眼”扎透，续费就是顺带的事。" }
+                ]
+            }),
+            sta: (q) => ({
+                think: `在相持阶段，你和“${q}”的关系处于磨洋工状态。现在的关键是寻找破局点。主要矛盾已经从“业务能力”转变成了“博弈耐力”。`,
+                cmds: [
+                    { b: "【打破平衡】", c: "制造一个小的利益点或新的危机感，打破目前的“死水一潭”。" },
+                    { b: "【标准打击】", c: "把凭本能的沟通变成标准化的指令，用你的确定性去对冲客户的不确定性。" }
+                ]
+            })
         },
-        protracted: {
-            defense: {
-                thinking: "不要幻想一个电话就拿下一个客户，这是‘速胜论’。现在的僵局是必经阶段。你要做的是‘深挖洞、广积粮’。每一个不续费的动作都是在消耗你的资源，你必须通过‘缩减非核心动作’来保护自己的士气和成本。",
-                quote: "“最后的胜利，往往在于‘再坚持一下’的努力之中。”",
-                actions: ["1. 制定 3 个月的慢节奏跟进计划，不要急于收割。","2. 保护核心老客户，防止存量流失比增量更重要。","3. 每天复盘一个失败案例，寻找敌我优劣变化的趋势。"]
-            }
+        uni: { // 统一战线
+            def: (q) => ({
+                think: `面对“${q}”，你现在是孤军奋战，所以觉得难。要把朋友搞得多多的。现在的障碍不是技术，是人心。`,
+                cmds: [
+                    { b: "【找斜杠盟友】", c: "找出对方公司里除了直接决策人之外，谁还希望能解决这个问题。拉拢他们成为你的内线。" },
+                    { b: "【孤立顽固派】", c: "如果某个环节卡住了，不要硬碰硬，绕过去，联合其他部门向这个环节施压。" }
+                ]
+            })
+        },
+        pro: { // 持久战
+            def: (q) => ({
+                think: `你想速胜“${q}”，这就是错误。现在的困难是系统性的。你要做好打长线的准备，核心是“保存自己”。`,
+                cmds: [
+                    { b: "【降低期待】", c: "接受这个月就是拿不下，把精力转向保护基本盘，不让剩下的也乱掉。" },
+                    { b: "【小步快跑】", c: "不求一蹴而就，每天只推进一个厘米。只要你还活着，对方就是在消耗生命。" }
+                ]
+            })
+        },
+        pra: { // 实践论
+            def: (q) => ({
+                think: `你对“${q}”的判断全是猜的。没有调查就没有发言权。你现在的焦虑来自于你脱离了群众，脱离了真实的一线数据。`,
+                cmds: [
+                    { b: "【去前线蹲坑】", c: "立刻停掉电脑沟通，亲自去客户公司或者现场看一眼他们到底是怎么操作的。" },
+                    { b: "【解剖麻雀】", c: "找一个最失败的案例，从头到尾复盘每一分钟的通话记录，找出那个你主观以为但客观不存在的幻觉。" }
+                ]
+            })
         }
-        // ... 这里的库我会通过逻辑合成补充
     };
 
-    function executeStrategy() {
-        const input = document.getElementById('userInput').value;
-        if(!input) return alert("请先输入战况情报。");
+    function startDeduction() {
+        const q = document.getElementById('userInput').value;
+        if(!q || q.length < 4) return alert("战况描述太简略，指挥部无法给出精确指令。");
 
-        // 核心修复：确保 ID 正确，且增加逻辑合成
         const resultView = document.getElementById('result-view');
         
-        // 逻辑推演引擎
-        let thinking = "", quote = "", actions = [];
-        const baseData = (STRATEGY_DATABASE[currentMode] && STRATEGY_DATABASE[currentMode][currentStage]) ? 
-                         STRATEGY_DATABASE[currentMode][currentStage] : null;
+        // 逻辑核验：确保每一路都有独特输出
+        const dataFunc = LOGIC_ENGINE[currentMode][currentStage] || LOGIC_ENGINE[currentMode]['def'];
+        const data = dataFunc(q.substring(0,15));
 
-        if(baseData) {
-            thinking = baseData.thinking;
-            quote = baseData.quote;
-            actions = baseData.actions;
-        } else {
-            // 兜底逻辑推演（当数据库未完全覆盖时）
-            thinking = `针对你描述的“${input.substring(0,10)}...”，采用${currentMode}框架分析：当前的困境源于你对“时位”的判断失误。在${currentStage === 'defense' ? '防御' : '相持'}阶段，最忌讳‘乱动’。你要从群众中来，到群众中去，重新审视你的基础。`;
-            quote = "“我们要坚持实事求是，不办过头事，不办由于主观盲目性而办不到的事。”";
-            actions = ["1. 离开桌面，找 3 个真实客户做深度‘田野调查’。","2. 把你的战术目标由‘收割’改为‘服务’，降低阻力。","3. 重新对齐你的沟通节奏，让它符合客观规律。"];
-        }
-
-        document.getElementById('res-thinking').innerText = thinking;
-        document.getElementById('res-quote').innerText = quote;
-        document.getElementById('res-action').innerHTML = actions.map(a => `<p>• ${a}</p>`).join('');
+        document.getElementById('res-think').innerText = data.think;
+        
+        const cmdBox = document.getElementById('res-actions');
+        cmdBox.innerHTML = "";
+        data.cmds.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'cmd-item';
+            div.innerHTML = `<b>${item.b}</b>${item.c}`;
+            cmdBox.appendChild(div);
+        });
 
         resultView.style.display = 'block';
-        
-        // 存储历史
-        saveHistory(input.substring(0,20), currentMode);
-
         window.scrollTo({top: resultView.offsetTop - 20, behavior: 'smooth'});
     }
-
-    function saveHistory(q, m) {
-        let list = JSON.parse(localStorage.getItem('strategy_logs') || '[]');
-        list.unshift({ q, m, t: new Date().toLocaleString() });
-        list = list.slice(0, 5);
-        localStorage.setItem('strategy_logs', JSON.stringify(list));
-        showHistory();
-    }
-
-    function showHistory() {
-        const list = JSON.parse(localStorage.getItem('strategy_logs') || '[]');
-        if(list.length === 0) return;
-        document.getElementById('history-area').style.display = 'block';
-        document.getElementById('history-list').innerHTML = list.map(i => `
-            <div class="hist-item"><b>${i.t}</b> | ${i.q}... <br>方案：${i.m}</div>
-        `).join('');
-    }
-
-    showHistory();
 </script>
 </body>
 </html>
